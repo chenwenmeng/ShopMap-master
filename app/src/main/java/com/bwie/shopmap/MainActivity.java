@@ -3,6 +3,9 @@ package com.bwie.shopmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+
+import android.widget.Toast;
+
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -55,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         //在地图上添加Marker，并显示
         Marker marker=(Marker)mBaiduMap.addOverlay(option);
-
         mBaiduMap.setOnMarkerDragListener(new BaiduMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDrag(Marker marker) {
@@ -64,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onMarkerDragEnd(Marker marker) {
-
             }
 
             @Override
