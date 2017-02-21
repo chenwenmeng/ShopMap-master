@@ -14,18 +14,26 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
+
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 
 /**
  * 此demo用来展示如何结合定位SDK实现定位，并使用MyLocationOverlay绘制定位位置 同时展示如何使用自定义图标绘制并点击时弹出泡泡
  */
-public class LocationDemo extends Activity {
+public
+class
+LocationDemo extends Activity {
 
     // 定位相关
     LocationClient mLocClient;
@@ -59,8 +67,6 @@ public class LocationDemo extends Activity {
         option.setScanSpan(1000);
         option.setIsNeedAddress(true);
         mLocClient.setLocOption(option);
-        MapStatusUpdate factory=MapStatusUpdateFactory.zoomTo(-500.0f);
-        mBaiduMap.animateMapStatus(factory);
         mLocClient.start();
     }
 
@@ -80,13 +86,41 @@ public class LocationDemo extends Activity {
             if (location == null || mMapView == null) {
                 return;
             }
-// 非空判断
+            // 非空判断
             if (location != null) {
                 // 根据BDLocation 对象获得经纬度以及详细地址信息
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
                 String address = location.getAddrStr();
-                Toast.makeText(LocationDemo.this,latitude+"----"+longitude,Toast.LENGTH_SHORT).show();
+                Toast.makeText(LocationDemo.this, latitude + "----" + longitude, Toast.LENGTH_SHORT).show();
+                //构建Marker图标
+                //构建Marker图标
+                BitmapDescriptor bitmap = BitmapDescriptorFactory
+                        .fromResource(R.mipmap.ic_launcher);
+                //定义Maker坐标点
+                LatLng point = new LatLng(latitude, longitude);
+                //构建MarkerOption，用于在地图上添加Marker
+                OverlayOptions option = new MarkerOptions()
+                        .position(point)
+                        .zIndex(9)
+                        .icon(bitmap)
+                        .draggable(true);
+
+                //在地图上添加Marker，并显示
+                Marker marker = (Marker) mBaiduMap.addOverlay(option);
+                //获取最小比例尺
+                float f = mBaiduMap.getMaxZoomLevel();//19.0 最小比例尺
+                //500米比例
+                MapStatusUpdate u = MapStatusUpdateFactory.zoomTo(f-7);//大小按需求计算就可以
+                mBaiduMap.animateMapStatus(u);
+
+                mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+
+                    public boolean onMarkerClick(Marker marker) {
+                        Toast.makeText(LocationDemo.this,"点击一下",Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
                 if (mLocClient.isStarted()) {
                     // 获得位置之后停止定位
                     mLocClient.stop();
@@ -94,7 +128,7 @@ public class LocationDemo extends Activity {
             }
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
-                            // 此处设置开发者获取到的方向信息，顺时针0-360
+                    // 此处设置开发者获取到的方向信息，顺时针0-360
                     .direction(100).latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
 

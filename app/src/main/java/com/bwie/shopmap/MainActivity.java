@@ -73,6 +73,15 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                Toast.makeText(MainActivity.this, "Marker被点击了！", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     @Override
